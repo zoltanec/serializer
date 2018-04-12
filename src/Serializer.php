@@ -35,25 +35,25 @@ namespace Jaddek\Serializer {
             $map   = $this->mapOfSetMethods($class);
             $class = new $class();
 
-            foreach ($data as $key => $value) {
-                $setter = $this->getSetter($key);
+            if (is_array($data)) {
+                foreach ($data as $key => $value) {
+                    $setter = $this->getSetter($key);
 
+                    if (array_key_exists($setter, $map)) {
+                        /** @var \ReflectionNamedType|null $type */
+                        $type = $map[$setter];
 
-                if (array_key_exists($setter, $map)) {
-                    /** @var \ReflectionNamedType|null $type */
-                    $type = $map[$setter];
-
-                    switch (true) {
-                        case is_null($type):
-                        case $type->isBuiltin():
-                            $this->setBuiltinAttribute($class, $setter, $value);
-                            break;
-                        case class_exists($type->getName()):
-                            $this->deNormalizeClass($class, $setter, $value, $type);
-                            break;
+                        switch (true) {
+                            case is_null($type):
+                            case $type->isBuiltin():
+                                $this->setBuiltinAttribute($class, $setter, $value);
+                                break;
+                            case class_exists($type->getName()):
+                                $this->deNormalizeClass($class, $setter, $value, $type);
+                                break;
+                        }
                     }
                 }
-
             }
 
             return $class;
@@ -117,7 +117,7 @@ namespace Jaddek\Serializer {
         {
             $data = $this->denormalize($data, $class);
 
-            return json_decode($data ,1);
+            return json_decode($data, 1);
         }
 
         /**

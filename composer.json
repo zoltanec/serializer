@@ -1,0 +1,15 @@
+{
+  "name": "jaddek/serializer",
+  "authors": [
+    {
+      "name": "tonynazarov",
+      "email": "jaddek@gmail.com"
+    }
+  ],
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "Jaddek\\Serializer\\": "src/"
+    }
+  }
+}

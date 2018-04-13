@@ -13,9 +13,9 @@ namespace Jaddek\Serializer\Converter {
          * @param string $key
          * @return string
          */
-        public function convert(string $key): string
+        public function convert($key)
         {
-            return $this->toUnderscoreString($key);
+            return is_string($key) ? $this->toUnderscoreString($key) : $key;
         }
 
         /**

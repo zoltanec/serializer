@@ -13,6 +13,6 @@ namespace Jaddek\Serializer
          * @param string $key
          * @return string
          */
-        public function convert(string $key): string;
+        public function convert($key);
     }
 }

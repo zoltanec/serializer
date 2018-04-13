@@ -13,11 +13,10 @@ namespace Jaddek\Serializer\Converter {
          * @param string $key
          * @return string
          */
-        public function convert(string $key): string
+        public function convert($key)
         {
-            return $this->toCamelCaseString($key);
+            return is_string($key) ? $this->toCamelCaseString($key) : $key;
         }
-
 
         /**
          * @param string $string

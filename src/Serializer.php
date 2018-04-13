@@ -10,14 +10,21 @@ namespace Jaddek\Serializer {
         /**
          * @var null|ConverterInterface
          */
-        private $converter;
+        private $keyConverter;
 
         /**
-         * @param ConverterInterface|null $converter
+         * @var ConverterInterface|null
          */
-        public function __construct(ConverterInterface $converter = null)
+        private $valueConverter;
+
+        /**
+         * @param ConverterInterface|null $keyConverter
+         * @param ConverterInterface|null $valueConverter
+         */
+        public function __construct(ConverterInterface $keyConverter = null, ConverterInterface $valueConverter = null)
         {
-            $this->converter = $converter;
+            $this->keyConverter = $keyConverter;
+            $this->valueConverter = $valueConverter;
         }
 
         /**
@@ -43,7 +50,12 @@ namespace Jaddek\Serializer {
                         /** @var \ReflectionNamedType|null $type */
                         $type = $map[$setter];
 
+                        if (empty($value)) {
+                            $value = null;
+                        }
+
                         switch (true) {
+                            case empty($value):
                             case is_null($type):
                             case $type->isBuiltin():
                                 $this->setBuiltinAttribute($class, $setter, $value);
@@ -87,6 +99,10 @@ namespace Jaddek\Serializer {
                     case class_exists($type->getName()):
                         $value = $this->getClassAttribute($class, $getter);
                         break;
+                }
+
+                if ($this->valueConverter) {
+                    $value = $this->valueConverter->convert($value ?? '');
                 }
 
                 $schema[$this->getKeyByGetter($getter)] = $value ?? null;
@@ -174,7 +190,13 @@ namespace Jaddek\Serializer {
          */
         private function getClassAttribute(object $class, $getter)
         {
-            return $this->normalize(call_user_func([$class, $getter]));
+            $value = call_user_func([$class, $getter]);
+
+            if (empty($value)) {
+                return $value;
+            }
+
+            return $this->normalize($value);
         }
 
         /**
@@ -288,8 +310,8 @@ namespace Jaddek\Serializer {
         {
             $key = lcfirst(substr($getter, 3));
 
-            if ($this->converter) {
-                $key = $this->converter->convert($key);
+            if ($this->keyConverter) {
+                $key = $this->keyConverter->convert($key);
             }
 
             return $key;

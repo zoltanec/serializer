@@ -41,7 +41,7 @@ class Profile
     /**
      * @return mixed
      */
-    public function getAddress(): array
+    public function getAddress(): ?Address
     {
         return $this->address;
     }
@@ -49,8 +49,8 @@ class Profile
     /**
      * @param mixed $address
      */
-    public function setAddress(Address $address): void
+    public function setAddress(?Address $address): void
     {
-        $this->address[] = $address;
+        $this->address = $address;
     }
 }

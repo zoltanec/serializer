@@ -8,17 +8,22 @@ require __DIR__.'/Profile.php';
 $params = [
     'name'      => 'My name',
     'surnameIn' => 'Sur name',
-    'address'   => null,
+    'address'   => [
+        [
+            'address' => 'test',
+            'house'  => [
+                'building' => 'hello',
+            ],
+        ],
+    ],
 ];
 
 
-$serializer = new Jaddek\Serializer\Serializer(null, new \Jaddek\Serializer\Converter\NullToStringConverter());
+$serializer = new Jaddek\Serializer\Serializer();
 $profile    = $serializer->denormalize($params, Profile::class);
 
-//print_r($profile);
 $reverted = $serializer->normalize($profile);
-var_dump($reverted);
-//
-//if ($params == $reverted) {
-//    echo "Array are equals\n";
-//}
+
+if ($params == $reverted) {
+    echo "Array are equals\n";
+}

@@ -18,10 +18,8 @@ $params = [
 
 
 $serializer = new Jaddek\Serializer\Serializer();
-/** @var Profile $profile */
 $profile    = $serializer->denormalize($params, Profile::class);
-
-$reverted = $serializer->normalize($profile);
+$reverted   = $serializer->normalize($profile);
 
 if ($params == $reverted) {
     echo "Array are equals\n";

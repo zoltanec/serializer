@@ -168,7 +168,7 @@ namespace Jaddek\Serializer {
             }
 
             if (!is_array($converters)) {
-                $converters = (array)$converters;
+                $converters = [$converters];
             }
 
             foreach ($converters as $converter) {

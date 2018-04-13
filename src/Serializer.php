@@ -201,7 +201,9 @@ namespace Jaddek\Serializer {
             $array = call_user_func([$class, $getter]);
 
             foreach ($array as $data) {
-                $schema[] = $this->normalize($data);
+                if (is_object($data)) {
+                    $schema[] = $this->normalize($data);
+                }
             }
 
             return $schema ?? [];

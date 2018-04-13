@@ -10,10 +10,11 @@ namespace Jaddek\Serializer\Converter {
     class UnderScoreToCamelCaseConverter implements ConverterInterface
     {
         /**
-         * @param string $key
-         * @return string
+         * @param $key
+         * @param \ReflectionNamedType|null $type
+         * @return mixed|string
          */
-        public function convert($key)
+        public function convert($key, ?\ReflectionNamedType $type = null)
         {
             return is_string($key) ? $this->toCamelCaseString($key) : $key;
         }

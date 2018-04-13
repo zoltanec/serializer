@@ -7,19 +7,18 @@ require __DIR__.'/Profile.php';
 
 $params = [
     'name'      => 'My name',
-    'surnameIn' => 'Sur name',
+    'surnameIn' => null,
     'address'   => [
         [
             'address' => 'test',
-            'house'  => [
-                'building' => 'hello',
-            ],
+            'house'   => null,
         ],
     ],
 ];
 
 
 $serializer = new Jaddek\Serializer\Serializer();
+/** @var Profile $profile */
 $profile    = $serializer->denormalize($params, Profile::class);
 
 $reverted = $serializer->normalize($profile);

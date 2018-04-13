@@ -1,7 +1,6 @@
 <?php
 
-namespace Jaddek\Serializer
-{
+namespace Jaddek\Serializer {
 
     /**
      * Interface ConverterInterface
@@ -10,9 +9,10 @@ namespace Jaddek\Serializer
     interface ConverterInterface
     {
         /**
-         * @param string $key
-         * @return string
+         * @param $key
+         * @param \ReflectionNamedType|null $type
+         * @return mixed
          */
-        public function convert($key);
+        public function convert($key, \ReflectionNamedType $type = null);
     }
 }

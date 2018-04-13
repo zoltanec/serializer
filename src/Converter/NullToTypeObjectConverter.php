@@ -1,13 +1,13 @@
 <?php
 
-namespace Jaddek\Serializer\Converter
-{
+namespace Jaddek\Serializer\Converter {
+
     use Jaddek\Serializer\ConverterInterface;
 
     /**
      *
      */
-    class NullToStringConverter implements ConverterInterface
+    class NullToTypeObjectConverter implements ConverterInterface
     {
         /**
          * @param $key
@@ -16,7 +16,13 @@ namespace Jaddek\Serializer\Converter
          */
         public function convert($key, ?\ReflectionNamedType $type = null)
         {
-            return is_null($key) ? '' : $key;
+            if (is_null($key) && $type && class_exists($type->getName())) {
+                $class = $type->getName();
+
+                return new $class;
+            }
+
+            return $key;
         }
     }
 }

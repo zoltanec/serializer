@@ -25,7 +25,7 @@ class Address
     /**
      * @return mixed
      */
-    public function getHouse(): House
+    public function getHouse(): ?House
     {
         return $this->house;
     }
@@ -33,7 +33,7 @@ class Address
     /**
      * @param mixed $house
      */
-    public function setHouse(House $house): void
+    public function setHouse(?House $house): void
     {
         $this->house = $house;
     }

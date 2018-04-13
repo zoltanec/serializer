@@ -21,9 +21,9 @@ namespace Jaddek\Serializer {
          * @param ConverterInterface|null $keyConverter
          * @param ConverterInterface|null $valueConverter
          */
-        public function __construct(ConverterInterface $keyConverter = null, ConverterInterface $valueConverter = null)
+        public function __construct($keyConverter = null, $valueConverter = null)
         {
-            $this->keyConverter = $keyConverter;
+            $this->keyConverter   = $keyConverter;
             $this->valueConverter = $valueConverter;
         }
 
@@ -85,7 +85,8 @@ namespace Jaddek\Serializer {
              * @var \ReflectionNamedType $type
              */
             foreach ($map as $getter => $type) {
-
+                $value = '';
+                $key   = $this->getKeyByGetter($getter);
                 switch (true) {
                     case is_null($type):
                         $value = $this->getBuiltinAttribute($class, $getter);
@@ -101,11 +102,10 @@ namespace Jaddek\Serializer {
                         break;
                 }
 
-                if ($this->valueConverter) {
-                    $value = $this->valueConverter->convert($value ?? '');
-                }
+                $this->runConverter($this->valueConverter, $value, $type);
+                $this->runConverter($this->keyConverter, $key, $type);
 
-                $schema[$this->getKeyByGetter($getter)] = $value ?? null;
+                $schema[$key] = $value;
             }
 
             return $schema ?? [];
@@ -153,6 +153,31 @@ namespace Jaddek\Serializer {
         {
             return json_encode($data);
 
+        }
+
+        /**
+         * @param $converters
+         * @param $value
+         * @param $type
+         * @return mixed|void
+         */
+        private function runConverter($converters, &$value, $type)
+        {
+            if (is_null($converters)) {
+                return;
+            }
+
+            if (!is_array($converters)) {
+                $converters = (array)$converters;
+            }
+
+            foreach ($converters as $converter) {
+                if (!$converter instanceof ConverterInterface) {
+                    continue;
+                }
+
+                $value = $converter->convert($value, $type);
+            }
         }
 
         /**
@@ -308,13 +333,7 @@ namespace Jaddek\Serializer {
          */
         private function getKeyByGetter(string $getter): string
         {
-            $key = lcfirst(substr($getter, 3));
-
-            if ($this->keyConverter) {
-                $key = $this->keyConverter->convert($key);
-            }
-
-            return $key;
+            return lcfirst(substr($getter, 3));
         }
 
         /**

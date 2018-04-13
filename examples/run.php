@@ -9,10 +9,8 @@ $params = [
     'name'      => 'My name',
     'surnameIn' => null,
     'address'   => [
-        [
-            'address' => 'test',
-            'house'   => null,
-        ],
+        'address' => 'test',
+        'house'   => null,
     ],
 ];
 

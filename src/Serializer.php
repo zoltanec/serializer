@@ -30,7 +30,7 @@ namespace Jaddek\Serializer {
         /**
          * @param $data
          * @param string $class
-         * @return string
+         * @return mixed
          * @throws \ReflectionException
          */
         public function denormalize($data, string $class)

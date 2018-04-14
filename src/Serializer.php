@@ -339,7 +339,7 @@ namespace Jaddek\Serializer {
         }
 
         /**
-         * @param $arr
+         * @param $array
          *
          * @return bool
          */

@@ -345,9 +345,16 @@ namespace Jaddek\Serializer {
          */
         private function isMulti($array): bool
         {
-            $current = current($array);
+            $isMulti = true;
 
-            return is_array($current);
+            foreach ($array as $value) {
+                if (!is_array($value)) {
+                    $isMulti = false;
+                    break;
+                }
+            }
+
+            return $isMulti;
         }
     }
 }

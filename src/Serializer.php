@@ -347,7 +347,7 @@ namespace Jaddek\Serializer {
         {
             $current = current($array);
 
-            return $current !== false && is_array($current);
+            return is_array($current);
         }
     }
 }

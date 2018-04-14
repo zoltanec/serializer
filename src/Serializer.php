@@ -340,11 +340,14 @@ namespace Jaddek\Serializer {
 
         /**
          * @param $arr
+         *
          * @return bool
          */
-        private function isMulti($arr)
+        private function isMulti($array): bool
         {
-            return isset($arr[0]) && is_array($arr[0]);
+            $current = current($array);
+
+            return $current !== false && is_array($current);
         }
     }
 }

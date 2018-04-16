@@ -159,7 +159,7 @@ namespace Jaddek\Serializer {
          * @param $converters
          * @param $value
          * @param $type
-         * @return mixed|void
+         * @throws \ReflectionException
          */
         private function runConverter($converters, &$value, $type)
         {
@@ -177,6 +177,10 @@ namespace Jaddek\Serializer {
                 }
 
                 $value = $converter->convert($value, $type);
+
+                if (is_object($value)) {
+                    $value = $this->normalize($value);
+                }
             }
         }
 

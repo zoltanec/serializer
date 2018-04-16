@@ -349,15 +349,20 @@ namespace Jaddek\Serializer {
          */
         private function isMultiArray($array): bool
         {
-
             if (!is_array($array)) {
                 return false;
             }
 
             $isMulti = true;
 
-            foreach ($array as $value) {
+            foreach ($array as $key => $value) {
                 if (!is_array($value)) {
+                    $isMulti = false;
+                    break;
+                }
+
+                // Список обычно состоит из интовых идентификаторов иначе эт опохоже на поле->значение
+                if (!is_int($key)) {
                     $isMulti = false;
                     break;
                 }

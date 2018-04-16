@@ -261,7 +261,7 @@ namespace Jaddek\Serializer {
          */
         private function deNormalizeClass($class, $setter, $value, \ReflectionNamedType $type): void
         {
-            if ($this->isMulti($value)) {
+            if ($this->isMultiArray($value)) {
                 foreach ($value as $val) {
                     $this->setClassAttribute($class, $setter, $val, $type);
                 }
@@ -347,8 +347,13 @@ namespace Jaddek\Serializer {
          *
          * @return bool
          */
-        private function isMulti($array): bool
+        private function isMultiArray($array): bool
         {
+
+            if (!is_array($array)) {
+                return false;
+            }
+
             $isMulti = true;
 
             foreach ($array as $value) {

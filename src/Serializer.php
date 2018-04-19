@@ -50,7 +50,7 @@ namespace Jaddek\Serializer {
                         /** @var \ReflectionNamedType|null $type */
                         $type = $map[$setter];
 
-                        if (empty($value) && !is_int($value)) {
+                        if (empty($value) && !is_int($value) && $value !== '0') {
                             $value = null;
                         }
 

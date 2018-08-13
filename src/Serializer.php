@@ -46,13 +46,13 @@ namespace Jaddek\Serializer {
                 foreach ($data as $key => $value) {
                     $setter = $this->getSetter($key);
 
+                    if (empty($value) && !is_int($value) && $value !== '0' && $value !== false) {
+                        $value = null;
+                    }
+
                     if (array_key_exists($setter, $map)) {
                         /** @var \ReflectionNamedType|null $type */
                         $type = $map[$setter];
-
-                        if (empty($value) && !is_int($value) && $value !== '0' && $value !== false) {
-                            $value = null;
-                        }
 
                         switch (true) {
                             case empty($value):
@@ -64,6 +64,8 @@ namespace Jaddek\Serializer {
                                 $this->deNormalizeClass($class, $setter, $value, $type);
                                 break;
                         }
+                    } elseif(property_exists($class, $key)) {
+                        $class->{$key} = $value;
                     }
                 }
             }
@@ -73,10 +75,10 @@ namespace Jaddek\Serializer {
 
         /**
          * @param object $class
-         * @return array
+         * @return mixed
          * @throws \ReflectionException
          */
-        public function normalize(object $class): array
+        public function normalize(object $class)
         {
             $map = $this->mapOfGetMethods(get_class($class));
 
@@ -84,28 +86,46 @@ namespace Jaddek\Serializer {
              * @var string $getter
              * @var \ReflectionNamedType $type
              */
-            foreach ($map as $getter => $type) {
-                $value = '';
-                $key   = $this->getKeyByGetter($getter);
-                switch (true) {
-                    case is_null($type):
-                        $value = $this->getBuiltinAttribute($class, $getter);
-                        break;
-                    case $type->getName() === 'array':
-                        $value = $this->getArrayAttribute($class, $getter);
-                        break;
-                    case $type->isBuiltin():
-                        $value = $this->getBuiltinAttribute($class, $getter);
-                        break;
-                    case class_exists($type->getName()):
-                        $value = $this->getClassAttribute($class, $getter);
-                        break;
+            if($map) {
+                foreach ($map as $getter => $type) {
+                    $value = '';
+                    $key   = $this->getKeyByGetter($getter);
+
+                    switch (true) {
+                        case is_null($type):
+                            $value = $this->getBuiltinAttribute($class, $getter);
+                            break;
+                        case $type->getName() === 'array':
+                            $value = $this->getArrayAttribute($class, $getter);
+                            break;
+                        case $type->isBuiltin():
+                            $value = $this->getBuiltinAttribute($class, $getter);
+                            break;
+                        case class_exists($type->getName()):
+                            $value = $this->getClassAttribute($class, $getter);
+                            break;
+                    }
+
+                    $this->runConverter($this->valueConverter, $value, $type);
+                    $this->runConverter($this->keyConverter, $key, $type);
+
+                    $schema[$key] = $value;
                 }
+            } else {
+                $reflection = new \ReflectionClass($class);
 
-                $this->runConverter($this->valueConverter, $value, $type);
-                $this->runConverter($this->keyConverter, $key, $type);
+                foreach ($reflection->getProperties(\ReflectionProperty::IS_PROTECTED) as $property) {
+                    /**
+                     * @var DTO|mixed $value
+                     */
+                    $value = $class->{$property->getName()};
+                    $key  = $property->getName();
 
-                $schema[$key] = $value;
+                    $this->runConverter($this->valueConverter, $value, null);
+                    $this->runConverter($this->keyConverter, $key, null);
+
+                    $schema[$key] = $value;
+                }
             }
 
             return $schema ?? [];
@@ -204,8 +224,12 @@ namespace Jaddek\Serializer {
         {
             $array = call_user_func([$class, $getter]);
 
-            foreach ($array as $data) {
+            foreach ($array as $key => $data) {
                 if (is_object($data)) {
+                    if (is_string($key)) {
+                        $schema[$key] = $this->normalize($data);
+                        continue;
+                    }
                     $schema[] = $this->normalize($data);
                 }
             }

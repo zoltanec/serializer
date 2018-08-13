@@ -1,15 +1,15 @@
 {
-  "name": "jaddek/serializer",
+  "name": "zoltanec/serializer",
   "authors": [
     {
-      "name": "tonynazarov",
-      "email": "jaddek@gmail.com"
+      "name": "alexnderguschensky",
+      "email": "dinixdevelop@gmail.com"
     }
   ],
   "require": {},
   "autoload": {
     "psr-4": {
-      "Jaddek\\Serializer\\": "src/"
+      "Zoltanec\\Serializer\\": "src/"
     }
   }
 }

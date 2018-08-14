@@ -1,8 +1,8 @@
 <?php
 
-namespace Jaddek\Serializer\Converter {
+namespace Zoltanec\Serializer\Converter {
 
-    use Jaddek\Serializer\ConverterInterface;
+    use Zoltanec\Serializer\ConverterInterface;
 
     /**
      *

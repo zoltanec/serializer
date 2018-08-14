@@ -15,7 +15,7 @@ $params = [
 ];
 
 
-$serializer = new Jaddek\Serializer\Serializer();
+$serializer = new Zoltanec\Serializer\Serializer();
 $profile    = $serializer->denormalize($params, Profile::class);
 $reverted   = $serializer->normalize($profile);
 
